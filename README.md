@@ -98,7 +98,7 @@ node scripts/test_ui.cjs
 
 `./scripts/verify.ps1 -WithUI` 可组合执行；不加参数只运行Python验证。非8765端口用 `PARTPILOT_TEST_URL` 配置DOM联调。该脚本只清理它自己创建的测试会话，不删除已有会话。
 
-当前已执行：44项Python测试通过；12个冻结离线案例通过；26项JSDOM＋真实本地HTTP检查通过。最新结果与限制以 [docs/VERIFICATION.md](docs/VERIFICATION.md) 为准。
+当前已执行：45项Python测试通过；12个冻结离线案例通过；26项JSDOM＋真实本地HTTP检查通过。最新结果与限制以 [docs/VERIFICATION.md](docs/VERIFICATION.md) 为准。
 
 `artifacts/` 保存JUnit、评测JSON、DOM报告、安装/服务日志和审查记录，默认不入Git。`data/eval_holdout.json` 的答案仅评测器读取，应用不加载。它是离线业务流程保留集，不是工业检索准确率评测。
 

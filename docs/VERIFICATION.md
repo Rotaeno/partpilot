@@ -10,6 +10,7 @@
 - 保留案例：data/eval_holdout.json在实现回归后、首次运行前冻结；12/12通过（artifacts/evaluation.json）。应用不读取答案。当前报告只测离线流程，不测LLM或真实工业检索效果。
 - 独立额外验证：确认写入过程中注入失败，selections与session同时回滚；重试成功。预算并发预留不能超过总额。
 - 最终组合 `scripts/verify.ps1 -WithUI`：44 passed（3.03秒）、12/12、26检查点通过；完整记录 artifacts/verification-final.log，JUnit artifacts/tests-final.xml。
+- 交付前补充“已确认条件不能被不确定新描述擦除”的保护及回归，最新Python测试为45 passed（3.13秒），artifacts/tests-final.log/xml。前述组合日志保留其当时44项原始结果。
 - `pip check`通过；锁定依赖 `pip install --dry-run -r requirements.lock.txt --no-index`通过。格式化为可阅读源码，无新增运行依赖。
 - 独立修复复核：原7项场景全部通过；15项针对性回归通过，报告已追加复核结果。
 

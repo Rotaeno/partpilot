@@ -67,6 +67,7 @@ class Agent:
         state = deepcopy(session)
         state["revision"] += 1
         state["suggestions"] = []
+        state["advisories"] = []
         return self.graph.invoke(
             {"session": state, "request": request, "route": "respond", "reply": ""},
             {"recursion_limit": 10},
@@ -150,6 +151,11 @@ class Agent:
                 if key != "equipment_code":
                     s["slots"].pop(key, None)
             for key, change in proposal.changes.items():
+                if change.inferred and s["slots"].get(key, {}).get("confirmed"):
+                    s["advisories"].append(
+                        f"{SLOT_LABELS[key]}的新描述尚不确定，原有已确认条件仍保留；请明确更正或移除该条件。"
+                    )
+                    continue
                 value = change.value
                 if "weight" in key:
                     try:
@@ -270,6 +276,7 @@ class Agent:
                 if inferred
                 else ""
             )
+            note += " ".join(s.get("advisories", []))
             ctx["reply"] = (
                 ctx["reply"] or f"已整理条件：{desc}。{note}请确认后点击“启动检索”。"
             )

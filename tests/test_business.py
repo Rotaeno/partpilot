@@ -251,3 +251,13 @@ def test_model_question_cannot_claim_success(app):
     )
     assert "已保存" not in result["messages"][-1]["content"]
     assert not app.state.store.selections(s["id"])
+
+
+def test_uncertainty_cannot_erase_previously_confirmed_filter(client, session):
+    s = turn(client, ready(client, session), "重量不超过2公斤")
+    s = turn(client, s, "可能不超过5公斤")
+    assert s["slots"]["max_weight_kg"]["value"] == 2
+    assert s["slots"]["max_weight_kg"]["confirmed"]
+    assert "原有已确认条件仍保留" in s["messages"][-1]["content"]
+    s = search(client, s)
+    assert [p["id"] for p in s["results"]] == ["PP-1001"]

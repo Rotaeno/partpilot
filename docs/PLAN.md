@@ -17,7 +17,7 @@
 FastAPI 单进程 + LangGraph 状态图 + SQLite 原子持久化 + 静态原生前端。
 模型接口 `interpret(text, current_slots) -> Proposal`。离线规则解析和 Qwen 结构化输出共用 Proposal；离线模式明确不称真实 LLM。
 状态：id/title/status/revision/slots/pending_conflicts/messages/results/query_id/query_revision/total/diagnostics/trace/selection。
-slots: equipment_code、name、part_code、material、max_weight_kg、min_weight_kg、location；每项 `{value, source, confirmed}`。
+slots: equipment_code、name、part_code、material、max_weight_kg、min_weight_kg、location；每项 `{value, source, confirmed, inclusive}`。inclusive对重量表示是否含边界；不确定新描述不能擦除原有已确认条件。conflict_map按字段保存未解除冲突，advisories记录保留旧条件的提示。
 动作：message（解析并提出条件，候选失效）、search（用户显式启动）、fallback（用户选择仅设备）、confirm（用户选择当前候选）、clear_slot。
 工具：lookup_equipment、search_parts、get_part_details、diagnose_no_results、confirm_selection。只读工具无写入副作用；confirm 原子写入并按会话/查询唯一键幂等。工具返回结构化证据，回复由证据构造。
 
