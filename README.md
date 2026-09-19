@@ -1,128 +1,126 @@
-# PartPilot · 配件查找助手
+# PartPilot · 公开配件查证 Agent
 
-基于工业配件识别 PRD 的个人 Agent 工程项目。**72 条合成配件、3 台演示设备，非企业交付、非生产系统。**
+从工业配件识别 PRD 出发的个人项目：理解问题，按工具观察继续检索公开 BOM、查阅原文、比较条目、追问或保留未知，最后由用户保存查证报告。
 
-描述需求 → 澄清设备与条件 → 显式启动检索 → 查看候选与匹配依据 → 修改条件 → 用户确认 → SQLite 保存记录。
+**Python + LangGraph + FastAPI + SQLite，单 Agent，原生网页。** 已用 `qwen3.8-flash` 做真实 Function Calling 与端到端联调。无需 GPU、向量数据库、Docker 或前端构建服务。
 
-Python + LangGraph + FastAPI + SQLite；原生 HTML/CSS/JavaScript。无需 GPU、Docker、Node 构建或外部数据库即可运行。默认解释器是**离线词法规则基线**，不是本地大模型；完整应用实际查询、更新和保存本地业务数据。
+- `/`、`/research`：官方 Original Prusa MINI 固定开源 BOM，**48 个真实部件出现条目、28 个完整原文章节**，附来源、行号、哈希和 GPL 许可。
+- `/baseline`：保留 **72 条合成配件、3 台模拟设备**，始终使用离线规则检索与确认保存。
 
-## 快速启动（Windows PowerShell）
+这是业务背景启发的个人研究项目。公开3D打印机部件不代表三一设备适配、公司交付、真实用户或生产指标。
 
-本次环境已安装 `.venv`。直接运行：
+## 安装和启动
+
+本次已安装依赖，服务在 **http://127.0.0.1:8765**。端口已有本项目服务时直接打开页面。
+
+以后在 Windows PowerShell 启动真实 Qwen 模式：
 
 ```powershell
 cd 'D:\文档\三一文档\partpilot'
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --workers 1
+# 首次安装时执行；本次已安装
+.\scripts\setup.ps1
+# 使用环境中的 DASHSCOPE_API_KEY；用户已授权50元项目总预算
+.\scripts\start.ps1 -Online -BudgetCny 50
 ```
 
-打开 **http://127.0.0.1:8765**。接口文档：http://127.0.0.1:8765/docs 。按 Ctrl+C 停止前台服务。也可运行 `./scripts/start.ps1`。
+没有密钥或不希望产生模型费用时，运行 `./scripts/start.ps1`。此时研究工作区是明确标注的离线策略，**不是本地大模型**；旧基线始终离线。按 Ctrl+C 停止前台服务。接口文档在 `/docs`。
 
-首次安装（Python 3.12 推荐；本次实际为 3.12.7）：
+手动安装和启动（本次 Python 3.12.7 验证）：
 
 ```powershell
-cd 'D:\文档\三一文档\partpilot'
 New-Item -ItemType Directory -Force .tmp,.cache,artifacts | Out-Null
 $env:TEMP = Join-Path $PWD '.tmp'
 $env:TMP = $env:TEMP
 $env:PIP_CACHE_DIR = Join-Path $PWD '.cache/pip'
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.lock.txt
+# 默认离线，不调用模型
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --workers 1
 ```
 
-或使用 `./scripts/setup.ps1`。应用从自身文件位置解析目录，不依赖密钥或企业资料。首次启动会从 `data/catalog.json` 初始化 `runtime/partpilot.db`，重启不覆盖会话。请保持单进程 `--workers 1`；当前版本使用进程内锁与 SQLite 事务保护本地操作。
+请保留 `--workers 1`。数据库是 `runtime/partpilot.db`；研究流程每步保存，确认报告使用事务，重启不覆盖历史。旧进程中断可恢复为可重试状态，GET 不能覆盖刚完成的报告。
 
 ## 三分钟演示
 
-1. **0:00–0:30** 新建查找，输入 `找液压回油滤芯`。助手要求补设备，尚未调用检索工具。
-2. **0:30–1:00** 选择或输入 `设备编码 DEMO-EX-001`，点击“启动检索”。查看 PP-1001、PP-1002、名称/别名与设备匹配依据。
-3. **1:00–1:40** 输入 `重量不超过2公斤`。旧候选立即失效，点击“启动检索”，只剩 1.2 kg 的 PP-1001。展开轨迹观察状态与工具摘要。
-4. **1:40–2:15** 打开配件详情，检查材质、重量和层级。点击“就是这个”，再点击“确认并保存”。这是本地确认记录，不创建采购订单。
-5. **2:15–2:40** 新建会话，再从历史恢复刚才会话，确认记录仍在；导出会话 JSON。
-6. **2:40–3:00** 可选异常演示：输入 `重量不限`，再输入 `重量至少100公斤`，点击检索。查看实际诊断数量，再点击“仅按设备重新检索”。
+1. 首页确认显示 Qwen、公开来源与许可。
+2. 点击用途描述例题：「送丝时咬住塑料丝往里推的那个带齿小轮……不知道英文术语」。观察实际检索词、工具步骤、追加查阅和证据定位；通常数秒到数十秒，模型结果可能波动。
+3. 展开原文引用，核对到固定 GitHub 版本的行号。最终数量从被验证的原始表格行生成，不使用模型自由摘要猜数字。
+4. 点击“保存查证报告”并确认；新建查证后从历史恢复，导出 JSON。
+5. 再试「我想换个轴承，但不知道型号，应该先确认什么？」并回答追问；或询问「这个BOM能确定电机额定电压是48V吗？」观察证据不足。
 
-## 当前能力和边界
+旧基线：`/baseline` 输入“找液压回油滤芯”→补 `DEMO-EX-001`→检索→输入“重量不超过2公斤”→重新检索→确认保存。此处数据为合成。
 
-| 能力 | 实现状态 |
-|---|---|
-| 文字条件、必填追问、设备有效性检查 | 已实现，离线规则验证 |
-| 多轮条件修订、冲突追问、单位归一化、严格重量边界 | 已实现；`大于`与`至少`不同 |
-| 配件编码、名称/别名、材质、重量、位置匹配 | 实际查询合成 SQLite 目录；词法匹配，不是向量语义检索 |
-| 无结果诊断、主动回退、工具失败处理 | 已实现；诊断实际移除单项条件计算数量，未擅自放宽条件 |
-| 候选详情、确认保存、幂等、会话恢复/重命名/删除/导出 | 已实现；删除界面要求确认，删除后不能恢复 |
-| Qwen 结构化解析适配、预算/超时/重试/调用数限制 | 已实现；使用 MockTransport 验证，**未进行本项目真实模型端到端验证** |
-| 图片上传、视觉理解、图像向量召回、爆炸图核验 | 暂缓；当前 SVG 只是类别示意，不能用于视觉验证 |
-| 企业 SIS、真实配件底库、语音、多语言、多用户、专家协同 | 暂缓，不是已取消的 PRD 要求 |
-| 浏览器视觉检查 | 当前工具无可用浏览器，**未完成、无截图**；已做DOM/API集成检查 |
+## Agent 的价值与限制
 
-离线解析支持明示设备编码 `DEMO-EX-001/002/003`、目录名称和别名、`材质不锈钢`、`重量不超过2000g`、`至少2公斤`、`重量不限`、`材质从不锈钢改为铝合金`。复杂省略、否定条件或任意口语不保证理解；不能用合成案例通过率宣称通用语言能力。
+v0.1 的填槽/过滤是固定流程；v0.2 模型根据观察选择下一工具、改写查询、补查原文、追问或结束。确定性代码负责工具执行、引用验证、数量展示和写入。
 
-## 模型和费用配置
+我们使用相同 Qwen、资料和工具的固定 RAG 对照：原问题检索目录与文档各一次、各读前2项，再由一次 Qwen 综合，且保留对话上下文。8个开发场景中，Agent 8/8、固定 RAG 7/8满足预定义状态/证据条件；前7题两者都能完成。用途描述题中 Agent 继续查证找到了原文，固定 RAG 请求更多信息。
 
-**默认预算为 0 元，默认无任何外部模型请求。** 本轮采用最新开发指令中的 0 元上限，未使用此前讨论的 50 元额度。现有环境中的 `DASHSCOPE_API_KEY` 不会在 demo 模式被读取或调用。
+**不是盲测或工业效果结论。** Agent 通常更慢、更贵（所选运行平均17.02秒 vs 7.89秒）；不能宣称普遍优于 RAG。R08参与过调试，早期失败保留。实验细节与下一步对照见 [docs/AGENT_EVALUATION.md](docs/AGENT_EVALUATION.md)。下一步应加入“带查询改写的固定RAG”，分离语言改写与动态工具编排的收益。
 
-应用只读取进程环境变量；`.env.example` 是说明，**不自动加载 `.env`**。
+## 公开数据
 
-| 环境变量 | 默认值 | 说明 |
+来自官方 `prusa3d/Original-Prusa-MINI`，commit `853bc30c4b10190f1d669ed6d0a567e333c28f21`。完整 GPL v3 随原始资料保留，中文名称是派生翻译，本地ID不是厂家料号。未知重量、材质、尺寸保持 null。
+
+```powershell
+# 无网络：原始哈希、原文行和确定性重建
+.venv/Scripts/python scripts/fetch_public_data.py --verify-only
+# 从公开上游重新获取固定版本，不调用模型
+.venv/Scripts/python scripts/fetch_public_data.py
+```
+
+详见 [数据与许可说明](data/public_sources/README.md)。48条索引不是完整采购清单；紧固件等可通过28个完整章节检索。数量属于对应装配段落，不是库存。链接PDF、第三方参数表未摄取，不能据BOM认定替换兼容或当前产品适配。
+
+## 费用与配置
+
+默认 `Settings()` 为0预算离线；`start.ps1 -Online` 显式设置50元上限、200次累计调用、1200输出token。所有真实研究评测写同一份持久化 `usage` 账本。原子预留费用，返回后按usage记账；超时和未知用量保留预留额。应用额度不是阿里云硬额度，不覆盖其他应用使用同一密钥的费用，不要删库绕过预算。
+
+| 环境变量 | 普通默认值 | 含义 |
 |---|---|---|
-| `PARTPILOT_MODE` | `demo` | `demo` 或 `qwen` |
-| `PARTPILOT_ENABLE_PAID_API` | `false` | 启用真实调用的独立开关 |
-| `PARTPILOT_BUDGET_CNY` | `0` | 该工作库累计预算；必须大于0才可调用 |
-| `DASHSCOPE_API_KEY` | 无 | 从进程环境读取，禁止提交或写入日志 |
-| `PARTPILOT_MAX_CALLS` | `50` | 全工作库累计上限，重试也计数 |
-| `PARTPILOT_MAX_OUTPUT_TOKENS` | `700` | 单次模型输出上限，最多2000 |
-| `PARTPILOT_TIMEOUT_SECONDS` | `20` | 请求超时，最多60秒 |
-| `PARTPILOT_RETRIES` | `0` | 仅网络/超时可重试，最多1次 |
-| `PARTPILOT_INPUT_PRICE` / `PARTPILOT_OUTPUT_PRICE` | `0.8` / `2.7` | 每百万token人民币估算单价；启用前核对供应商价格 |
+| PARTPILOT_MODE | demo | 研究策略 demo / qwen |
+| PARTPILOT_ENABLE_PAID_API | false | 独立调用开关 |
+| PARTPILOT_BUDGET_CNY | 0 | 工作库累计预算 |
+| DASHSCOPE_API_KEY | 无 | 仅从进程环境读取 |
+| PARTPILOT_MAX_CALLS | 50 | Online脚本设200，重试计入 |
+| PARTPILOT_MAX_OUTPUT_TOKENS | 700 | Online脚本设1200，最多2000 |
+| PARTPILOT_TIMEOUT_SECONDS | 20 | 单次超时，最多60秒 |
+| PARTPILOT_RETRIES | 0 | 网络/超时最多重试1次 |
+| PARTPILOT_INPUT_PRICE / PARTPILOT_OUTPUT_PRICE | 0.8 / 2.7 | 每百万token人民币估算单价，使用前核对供应商 |
 
-后续获得调用授权后，同时设 `PARTPILOT_MODE=qwen`、付费开关为true及正预算，再启动应用。模型固定 `qwen3.8-flash`，使用北京 DashScope OpenAI兼容端点；未做隐式旗舰模型回退。Qwen 输出经 Pydantic、原文证据、值/动作约束校验，不接收任意工具名或任意 SQL。
+`.env.example` 仅说明，不自动加载 `.env`。模型固定 qwen3.8-flash，无旗舰模型隐式回退。每轮最多8次决策；仅可访问允许的本地资料工具，不执行Shell、任意SQL或任意URL。模型不能自行保存报告。所有配件数量来自已读的真实原文行，而非自由摘要。
 
-调用前在 SQLite 原子预留费用，响应后以 usage 更新；超时和用量未知保留预留额。费用=`输入tokens×输入单价/1e6 + 输出tokens×输出单价/1e6`。这是应用内控制，**不是阿里云账号硬限额或账单确认**；不覆盖其他应用使用同一密钥的费用。重启保留用量，切勿通过删除库重置预算。
-
-## 验证与证据
+## 验证与产物
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/generate_catalog.py --check
-.\.venv\Scripts\python.exe -m pytest -q --junitxml=artifacts/tests-final.xml
-.\.venv\Scripts\python.exe scripts/evaluate.py
-```
-
-前端测试是可选开发依赖，应用运行不需要 Node：
-
-```powershell
+# 不产生模型费用
+.\scripts\verify.ps1
+# 前端开发测试依赖；应用运行无需Node
 npm.cmd ci --ignore-scripts --cache .cache/npm --no-audit --no-fund
-# 保持本地应用在另一个终端运行
-node --check static/app.js
+# 保持应用运行，旧界面离线检查
 node scripts/test_ui.cjs
+# 以下会调用真实Qwen，计入授权账本
+node scripts/test_research_ui.cjs --live
+.venv/Scripts/python scripts/evaluate_research.py --live --output artifacts/new-agent-eval.json
+.venv/Scripts/python scripts/evaluate_research.py --fixed-rag --output artifacts/new-fixed-eval.json
 ```
 
-`./scripts/verify.ps1 -WithUI` 可组合执行；不加参数只运行Python验证。非8765端口用 `PARTPILOT_TEST_URL` 配置DOM联调。该脚本只清理它自己创建的测试会话，不删除已有会话。
+原业务45项、研究及审查回归16项；旧界面26项 DOM/API 检查、新界面18项真实 Qwen/API DOM 联调；公开资料复验与8个开发场景对照。最新完整结果见 [验证记录](docs/VERIFICATION.md)。原始轨迹、JUnit、费用、DOM快照和失败记录在 `artifacts/`，不入 Git。
 
-当前已执行：45项Python测试通过；12个冻结离线案例通过；26项JSDOM＋真实本地HTTP检查通过。最新结果与限制以 [docs/VERIFICATION.md](docs/VERIFICATION.md) 为准。
+**浏览器视觉验收未完成**：浏览器工具无连接。JSDOM验证了脚本、控件和API联动，不能证明布局、字体、滚动和移动设备效果；没有页面截图。
 
-`artifacts/` 保存JUnit、评测JSON、DOM报告、安装/服务日志和审查记录，默认不入Git。`data/eval_holdout.json` 的答案仅评测器读取，应用不加载。它是离线业务流程保留集，不是工业检索准确率评测。
+## 代码阅读入口
 
-## 代码阅读与面试入口
-
-| 文件 | 重点 |
+| 文件 | 职责 |
 |---|---|
-| `app/schemas.py` | 模型提案、证据、业务请求契约 |
-| `app/agent.py` | LangGraph节点、条件路由、业务状态、冲突与结果失效 |
-| `app/providers.py` | 离线规则基线、Qwen结构化解析、预算阻断与错误分类 |
-| `app/tools.py` | 确定性查询、缺失值、含/不含边界、无结果诊断 |
-| `app/service.py` | revision并发保护、用户确认、候选与query绑定、幂等重放 |
-| `app/store.py` | SQLite快照、确认事务、持久化预算预留 |
-| `app/main.py` | FastAPI入口与异常到HTTP响应的映射 |
-| `static/app.js` | UI只消费服务端快照，不生成业务结果 |
-| `tests/` | 需求验收、审查缺陷回归、网络模拟 |
-| `docs/PLAN.md` / `docs/STATUS.md` | 需求出处、延期、验收与恢复路线 |
+| app/research_agent.py | decide→execute循环、策略对照、报告保存、中断恢复 |
+| app/research_llm.py | 原生Function Calling、预算/用量、错误分类 |
+| app/research_tools.py | 公开检索/原文/比较、工具schema、来源引用 |
+| app/main.py | 新旧工作区API |
+| app/store.py | 原业务快照与共享费用账本 |
+| static/research.js | 实时轮询、引用、显式保存与恢复 |
+| scripts/fetch_public_data.py | 可复现公开数据获取及校验 |
+| scripts/evaluate_research.py | 开发场景和固定RAG对照，不传gold给模型 |
+| app/agent.py、tools.py、service.py | 原离线基线状态、检索、幂等确认 |
+| docs/PLAN.md、STATUS.md | PRD定位、范围、决策、失败与恢复 |
 
-状态由SQLite在**完整轮次结束时**原子保存；LangGraph负责编排，不宣称实现了节点级断点恢复。确认记录和会话快照在同一事务中保存。当前可展示重点是状态一致性、工具真实性和异常处理；模型自主决策是否胜过固定流程，仍需以后在相同数据/工具上做真实模型对照实验。
-
-## 后续建议
-
-1. 在可用浏览器中完成桌面/小屏视觉检查并补截图。
-2. 明确模型预算后跑真实Qwen场景，分别记录字段提取、错误调用、任务完成、耗时与token；不把模拟结果混入。
-3. 基于公开授权图片增加图片抽取；再以实际评测决定是否引入向量检索。
-
-不自动发布、不上传企业资料。项目仅在本地使用，公开部署前需要单独设计认证、数据隔离和并发策略。
+本轮仍暂缓图片理解、图像向量检索、爆炸图核验、真实SIS、库存/采购系统、多用户、多语言和公开部署。先补真实浏览器检查，再用未参与调试的新问题检验增量收益。

@@ -1,26 +1,43 @@
 import json
+from dataclasses import replace
 import sqlite3
 from urllib.parse import urlparse
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field, ConfigDict
 from .config import ROOT, Settings
 from .schemas import TurnRequest, ConfirmRequest, RenameRequest
 from .service import Service, Conflict
 from .store import Store, now
+from .research_agent import ResearchService
+
+
+class ResearchTurn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    message: str = Field(min_length=1, max_length=2000)
+    expected_revision: int = Field(ge=0)
+
+
+class ResearchSave(BaseModel):
+    expected_revision: int = Field(ge=0)
 
 
 def create_app(settings=None, *, interpreter=None, tools=None):
     cfg = settings or Settings.from_env()
     store = Store(cfg.db_path, cfg.catalog_path)
-    service = Service(store, cfg, interpreter=interpreter, tools=tools)
+    # Preserve v0.1 as a deterministic comparison workspace even when research is online.
+    baseline_cfg = replace(cfg, mode="demo", enable_paid_api=False, budget_cny=0)
+    service = Service(store, baseline_cfg, interpreter=interpreter, tools=tools)
     app = FastAPI(
         title="PartPilot",
-        version="0.1.0",
+        version="0.2.0",
         description="个人项目 · 合成配件数据 · 单用户本地运行",
     )
     app.state.service = service
     app.state.store = store
+    research = ResearchService(store, cfg)
+    app.state.research = research
 
     @app.middleware("http")
     async def local_boundary(request: Request, call_next):
@@ -57,6 +74,10 @@ def create_app(settings=None, *, interpreter=None, tools=None):
 
     @app.get("/")
     def home():
+        return FileResponse(ROOT / "static" / "research.html")
+
+    @app.get("/baseline")
+    def baseline_home():
         return FileResponse(ROOT / "static" / "index.html")
 
     @app.get("/api/health")
@@ -66,10 +87,10 @@ def create_app(settings=None, *, interpreter=None, tools=None):
     @app.get("/api/config")
     def config():
         return dict(
-            mode=cfg.mode,
+            mode=baseline_cfg.mode,
             model=cfg.model,
-            budget_cny=cfg.budget_cny,
-            external_calls_enabled=cfg.external_calls_enabled,
+            budget_cny=baseline_cfg.budget_cny,
+            external_calls_enabled=baseline_cfg.external_calls_enabled,
             equipment_count=len(store.equipment()),
             part_count=len(store.parts()),
             usage=store.usage(),
@@ -118,7 +139,7 @@ def create_app(settings=None, *, interpreter=None, tools=None):
         body = {
             "project": "PartPilot",
             "synthetic_data": True,
-            "mode": cfg.mode,
+            "mode": baseline_cfg.mode,
             "exported_at": now(),
             "session": s,
             "selections": store.selections(session_id),
@@ -128,6 +149,62 @@ def create_app(settings=None, *, interpreter=None, tools=None):
             media_type="application/json",
             headers={
                 "Content-Disposition": f'attachment; filename="partpilot-{s["id"]}.json"'
+            },
+        )
+
+    @app.get("/research")
+    def research_home():
+        return FileResponse(ROOT / "static/research.html")
+
+    @app.get("/api/research/config")
+    def research_config():
+        return dict(
+            mode=research.policy.name,
+            model=cfg.model,
+            budget_cny=cfg.budget_cny,
+            usage=store.usage(),
+            sources=research.corpus.sources,
+            part_count=len(research.corpus.parts),
+            document_count=len(research.corpus.docs),
+        )
+
+    @app.get("/api/research/runs")
+    def research_runs():
+        return {"items": research.list()}
+
+    @app.post("/api/research/runs", status_code=201)
+    def research_create():
+        return research.create()
+
+    @app.get("/api/research/runs/{run_id}")
+    def research_get(run_id: str):
+        return research.get(run_id)
+
+    @app.post("/api/research/runs/{run_id}/turn")
+    def research_turn(run_id: str, body: ResearchTurn):
+        return research.turn(run_id, body.message, body.expected_revision)
+
+    @app.post("/api/research/runs/{run_id}/save")
+    def research_save(run_id: str, body: ResearchSave):
+        return research.save_report(run_id, body.expected_revision)
+
+    @app.get("/api/research/runs/{run_id}/export")
+    def research_export(run_id: str):
+        r = research.get(run_id)
+        return Response(
+            json.dumps(
+                {
+                    "project": "PartPilot",
+                    "public_data": True,
+                    "sources": research.corpus.sources,
+                    "run": r,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            media_type="application/json",
+            headers={
+                "Content-Disposition": f'attachment; filename="partpilot-research-{r["id"]}.json"'
             },
         )
 

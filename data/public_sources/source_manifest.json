@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "id": "prusa-mini-bom",
+  "title": "Original Prusa MINI official BOM snapshot",
+  "repository": "https://github.com/prusa3d/Original-Prusa-MINI",
+  "commit": "853bc30c4b10190f1d669ed6d0a567e333c28f21",
+  "license": "GPL-3.0",
+  "license_source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/LICENSE",
+  "license_local_path": "raw/LICENSE",
+  "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+  "attribution": "Upstream hardware and BOM: PRUSA RESEARCH / prusa3d contributors.",
+  "modification_notice": "PartPilot extracts BOM rows, adds stable local IDs and derived Chinese labels. Raw files are byte-for-byte upstream originals. The extraction script is the editable source for these derivatives.",
+  "source_type": "official_open_hardware_bom",
+  "synthetic": false,
+  "scope": "This exact repository snapshot, not a live product catalog or proof of compatibility with other revisions, current MINI+, or any industrial equipment.",
+  "license_scope": "The repository root GPL v3 LICENSE accompanies the copied repository-authored Markdown BOM/README. Linked third-party datasheets, images, PDFs and external repositories are not downloaded or relicensed.",
+  "selection_rule": "Every STANDARD PARTS and CUSTOM PARTS BOM row except textile sleeves; additionally the four axis motor rows. This is a selected component index, not a complete printer kit or purchasing list. Complete original BOM sections remain available as evidence.",
+  "files": [
+    {
+      "id": "LICENSE",
+      "upstream_path": "LICENSE",
+      "local_path": "raw/LICENSE",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/LICENSE",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "README.md",
+      "upstream_path": "README.md",
+      "local_path": "raw/README.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/README.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/README.md",
+      "sha256": "d991b7cd21a1e3328f6b21152503d71e7dad18cbcd8cd6d93540191cb6dfe5d2",
+      "bytes": 733,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-X-AXIS.md",
+      "upstream_path": "BOM/X-AXIS.md",
+      "local_path": "raw/BOM/X-AXIS.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/X-AXIS.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/X-AXIS.md",
+      "sha256": "3d4155d04df435e64c41636ac8a1ec106f2a1ad588ccfa11c21a909c7f783be5",
+      "bytes": 2223,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-Y-AXIS.md",
+      "upstream_path": "BOM/Y-AXIS.md",
+      "local_path": "raw/BOM/Y-AXIS.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/Y-AXIS.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/Y-AXIS.md",
+      "sha256": "40b85b79ecd0c633cda84597c9f4a05f2f11ae0e7486debe180f7f5e54283873",
+      "bytes": 1986,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-Z-AXIS.md",
+      "upstream_path": "BOM/Z-AXIS.md",
+      "local_path": "raw/BOM/Z-AXIS.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/Z-AXIS.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/Z-AXIS.md",
+      "sha256": "0ca05b3a7cf8cb43fe36f83a6e907861c709f40d2cbb76377aab1b06bd30489e",
+      "bytes": 1002,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-E-AXIS.md",
+      "upstream_path": "BOM/E-AXIS.md",
+      "local_path": "raw/BOM/E-AXIS.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/E-AXIS.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/E-AXIS.md",
+      "sha256": "2c929e06f6a9f52c240d470f139f5a9e756458549e9af92ad924b6e6ed14367c",
+      "bytes": 1395,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-SPOOLHOLDER.md",
+      "upstream_path": "BOM/SPOOLHOLDER.md",
+      "local_path": "raw/BOM/SPOOLHOLDER.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/SPOOLHOLDER.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/SPOOLHOLDER.md",
+      "sha256": "a854ab9482f5b8fc6e4c56b30b84da2d8ca9c6a26273296c5e1502f3cf3b6dd9",
+      "bytes": 482,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    },
+    {
+      "id": "BOM-FILAMENT-SENSOR.md",
+      "upstream_path": "BOM/FILAMENT SENSOR.md",
+      "local_path": "raw/BOM/FILAMENT SENSOR.md",
+      "source_url": "https://github.com/prusa3d/Original-Prusa-MINI/blob/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/FILAMENT%20SENSOR.md",
+      "raw_url": "https://raw.githubusercontent.com/prusa3d/Original-Prusa-MINI/853bc30c4b10190f1d669ed6d0a567e333c28f21/BOM/FILAMENT%20SENSOR.md",
+      "sha256": "8f9f1ec9f0f9e7bbebbfd932429d4337486194008f848d40863720f566f5ce87",
+      "bytes": 786,
+      "fetched_at": "2026-09-19T19:20:07.366746+00:00",
+      "license": "GPL-3.0"
+    }
+  ]
+}

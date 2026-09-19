@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "test:ui": "node scripts/test_ui.cjs",
+    "test:research:live": "node scripts/test_research_ui.cjs --live",
     "format": "prettier --write static/index.html static/styles.css static/app.js"
   },
   "devDependencies": {

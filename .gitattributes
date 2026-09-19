@@ -1,1 +1,2 @@
 * text=auto eol=lf
+data/public_sources/raw/** -text -whitespace

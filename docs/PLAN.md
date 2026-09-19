@@ -69,3 +69,25 @@ A12 instructions reproducible, no credentials/private data, no external API call
 - SQLite stores per-turn graph snapshot and audit atomically; no mid-node resume or claim of LangGraph checkpointer persistence.
 - Synthetic keyword/alias retrieval is a baseline, not semantic embeddings or visual retrieval.
 - Latest instruction sets this implementation run's external API budget to 0; prior one-request Qwen connectivity test is not Agent E2E validation.
+
+## V0.2 iteration — 公开资料与Agent必要性（2026-09-20）
+用户要求继续迭代，解决数据真实性和Agent价值；随后明确恢复50元总预算，Qwen3.8-flash真实联调。上文0元为v0.1历史范围。
+
+新增「公开配件查证」工作区，保留原合成设备查找作为固定流程基线。真实公开硬件BOM/文档独立数据包，不伪造与三一设备的适配关系。可访问不等于开放许可，必须记录仓库/版本/URL/许可/获取时间/SHA256。
+
+业务：用户描述公开设备上的零件问题；Agent可检索BOM、查阅资料、读取条目、对比候选、澄清或给出有原文证据的查证报告，最后用户保存报告。适合Agent的是术语/型号转换、分散资料间选择下一工具、证据不足时停止；数量计算、过滤、比对和保存由确定性代码执行。
+
+Research loop: decide -> execute allowlisted tool -> observe -> decide；最多8个决策、禁止相同参数无效重复。策略接口共用工具：Qwen原生function calling、离线规则、固定流程对照。成功不能只由工具调用数量判定。原业务固有条件仍保留；新公开资料工作区不要求虚构设备编码。
+
+新增API（主代理维护）:
+- GET /api/research/config -> {mode,model,budget_cny,usage:{calls,accounted_cny},sources:[{id,title,url,license}],part_count,document_count}
+- POST /api/research/runs {} -> full run
+- GET /api/research/runs -> {items:[{id,title,status,updated_at}]}
+- GET /api/research/runs/{id} -> full run (可在执行中轮询观察)
+- POST /api/research/runs/{id}/turn {message,expected_revision} -> full run
+- POST /api/research/runs/{id}/save {expected_revision} -> full run (显式、幂等保存查证报告)
+- GET /api/research/runs/{id}/export -> JSON
+Run: {id,title,status,revision,messages:[{role,content,at}],trace:[{step,tool,arguments,summary,status,elapsed_ms,at}],evidence:[{id,title,text,source_url,kind}],answer:{summary,claims:[{evidence_id,quote,source_url,title}],limitations:[str],part_ids:[str]}|null,question:null|{text,options:[str]},saved_report:null|{id,created_at},updated_at,mode}.
+status idle/working/needs_input/completed/insufficient/error/limit_reached。新输入清除旧报告、旧证据，保留对话上下文；revision阻止执行中重复提交。报告仅能引用本轮工具已返回的证据原文。前端展示资料来源、实际工具步骤、证据引用、澄清选择、报告保存和费用。
+
+V0.2验收B01公开数据获取脚本/来源/许可/哈希可复现；B02真实模型根据观察调用不同工具；B03模糊问题追问而不造适配；B04无证据不生成确定性事实、注入文字不执行；B05重复调用/预算/超时受控；B06用户补充需求后旧报告不能保存；B07相同工具和资料的固定流程对照，记录未改善结果；B08实际Qwen轨迹、token、费用及失败；B09新旧工作区都可运行和测试。
