@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成泵示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="48" y="62" width="84" height="76" rx="12"/><circle cx="89" cy="100" r="24"/><circle cx="89" cy="100" r="9"/><path d="M74 62V41h28v21m30 30h26v18h-26M58 138v13m63-13v13M42 81h6m-6 37h6"/></g>
+</svg>

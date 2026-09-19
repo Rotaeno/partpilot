@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f6f3" />
+    <title>PartPilot · 配件查找工作台</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body>
+    <aside class="sidebar" aria-label="工作区导航">
+      <a class="brand" href="/" aria-label="PartPilot 首页"
+        ><span class="brand-mark" aria-hidden="true"
+          ><svg viewBox="0 0 32 32">
+            <path
+              d="M7 24V8h10a7 7 0 0 1 0 14h-4v-6h4a1 1 0 0 0 0-2h-4v10z"
+              fill="currentColor"
+            />
+            <path d="m24 5 3 3-3 3-3-3z" fill="#79d5bd" /></svg></span
+        ><span>PartPilot<small>工业配件查找助手</small></span></a
+      >
+      <button class="new-session" id="new-session">
+        <span data-icon="plus"></span>新建查找<span class="key-hint">＋</span>
+      </button>
+      <div class="sidebar-label">工作空间</div>
+      <div class="nav-active">
+        <span data-icon="grid"></span>配件查找<span class="nav-dot"></span>
+      </div>
+      <div class="history-head">
+        <span class="sidebar-label">最近会话</span
+        ><span class="history-count" id="history-count">0</span>
+      </div>
+      <div id="history-list" class="history-list" aria-label="会话历史"></div>
+      <div class="sidebar-bottom">
+        <div class="workspace-note">
+          <span data-icon="layers"></span>
+          <div>
+            独立项目 · 本地工作区<small>合成配件目录 / 非生产系统</small>
+          </div>
+        </div>
+        <div class="profile">
+          <span class="avatar">P</span>
+          <div>个人演示工作区<small>Single-user workspace</small></div>
+          <span class="online-dot" title="本地应用"></span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <span data-icon="grid"></span><span>工作空间</span
+          ><span class="slash">/</span><strong>配件查找</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="mode-badge" id="mode-badge"><i></i>离线规则演示</span
+          ><button
+            class="icon-button mobile-history-button"
+            id="open-history"
+            title="查看会话历史"
+            aria-label="查看会话历史"
+          >
+            <span data-icon="message"></span></button
+          ><button
+            class="icon-button"
+            id="export-session"
+            title="导出当前会话 JSON"
+            aria-label="导出当前会话"
+          >
+            <span data-icon="download"></span>
+          </button>
+        </div>
+      </header>
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">FIND THE RIGHT PART</div>
+          <h1>让每一次查找，都有据可循<span>。</span></h1>
+          <p>描述需要的配件，逐步确认条件，在设备范围内找到合适的候选。</p>
+        </div>
+        <div class="catalog-stat">
+          <span class="stat-icon" data-icon="database"></span>
+          <div>
+            <strong id="catalog-count">—</strong
+            ><span>条演示配件 · <b id="equipment-count">—</b> 台设备</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="workspace-grid">
+        <section class="conversation panel" aria-label="配件查找对话">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="small-brand" data-icon="sparkles"></span>
+              <div>
+                <h2>查找助手</h2>
+                <span>描述 → 澄清 → 检索 → 确认</span>
+              </div>
+            </div>
+            <span class="session-status" id="session-status">准备就绪</span>
+          </div>
+          <div
+            id="message-list"
+            class="message-list"
+            aria-live="polite"
+            aria-relevant="additions"
+          ></div>
+          <div class="composer-wrap">
+            <div id="suggestions" class="suggestions"></div>
+            <form id="message-form" class="composer">
+              <label for="message-input" class="sr-only"
+                >配件描述或设备编码</label
+              ><textarea
+                id="message-input"
+                rows="2"
+                maxlength="2000"
+                placeholder="例如：找液压回油滤芯，设备 DEMO-EX-001"
+              ></textarea>
+              <div class="composer-bottom">
+                <span><span data-icon="text"></span>文字输入</span
+                ><button
+                  type="submit"
+                  id="send-message"
+                  class="send-button"
+                  aria-label="发送消息"
+                >
+                  <span data-icon="arrow-up"></span>
+                </button>
+              </div>
+            </form>
+            <div class="composer-hint">
+              <span>Enter 发送 · Shift + Enter 换行</span
+              ><span id="call-budget">外部调用已关闭</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="results-column" aria-label="检索条件与候选配件">
+          <div class="conditions panel">
+            <div class="section-header">
+              <h2><span data-icon="sliders"></span>当前检索条件</h2>
+              <button class="text-button" id="edit-equipment">
+                <span data-icon="edit"></span>设置设备
+              </button>
+            </div>
+            <div id="conditions-list" class="conditions-list"></div>
+            <div class="condition-actions">
+              <span id="conditions-help">先提供设备编码，再启动检索</span
+              ><button id="start-search" class="primary-button">
+                <span data-icon="search"></span>启动检索
+              </button>
+            </div>
+          </div>
+          <div class="results-panel panel">
+            <div class="section-header results-heading">
+              <h2>
+                <span data-icon="box"></span>候选配件<span
+                  class="result-count"
+                  id="result-count"
+                  >0</span
+                >
+              </h2>
+              <span id="results-caption" class="muted">等待启动检索</span>
+            </div>
+            <div
+              id="result-content"
+              class="result-content"
+              aria-live="polite"
+            ></div>
+          </div>
+          <details class="trace-panel panel" id="trace-panel">
+            <summary>
+              <span
+                ><span data-icon="route"></span>执行轨迹
+                <span id="trace-count" class="trace-count">0</span></span
+              ><span class="trace-caption"
+                >查看工具与业务状态 <span data-icon="chevron-down"></span
+              ></span>
+            </summary>
+            <div class="trace-disclaimer">
+              这里展示工具执行摘要与耗时，不展示模型内部推理。
+            </div>
+            <div id="trace-list" class="trace-list"></div>
+          </details>
+        </section>
+      </div>
+      <footer class="page-footer">
+        <span
+          ><span data-icon="shield"></span>所有配件与设备均为合成演示数据</span
+        ><span>条件可追溯 · 结果需确认 · 记录可恢复</span>
+      </footer>
+    </main>
+
+    <dialog id="detail-dialog" class="detail-dialog">
+      <div class="dialog-top">
+        <span class="eyebrow">PART DETAILS</span
+        ><button
+          class="icon-button"
+          data-close="detail-dialog"
+          aria-label="关闭配件详情"
+        >
+          <span data-icon="x"></span>
+        </button>
+      </div>
+      <div id="detail-content"></div>
+    </dialog>
+    <dialog id="confirm-dialog" class="small-dialog">
+      <div class="dialog-top">
+        <h2 id="confirm-title">确认选择</h2>
+        <button
+          class="icon-button"
+          data-close="confirm-dialog"
+          aria-label="关闭确认窗口"
+        >
+          <span data-icon="x"></span>
+        </button>
+      </div>
+      <p id="confirm-description"></p>
+      <div class="dialog-actions">
+        <button class="secondary-button" data-close="confirm-dialog">
+          取消</button
+        ><button class="primary-button" id="confirm-action">确认</button>
+      </div>
+    </dialog>
+    <dialog id="rename-dialog" class="small-dialog">
+      <form id="rename-form">
+        <div class="dialog-top">
+          <h2>重命名会话</h2>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="rename-dialog"
+            aria-label="关闭重命名窗口"
+          >
+            <span data-icon="x"></span>
+          </button>
+        </div>
+        <label class="field-label" for="rename-input">会话名称</label
+        ><input id="rename-input" maxlength="60" required autocomplete="off" />
+        <div class="dialog-actions">
+          <button
+            type="button"
+            class="secondary-button"
+            data-close="rename-dialog"
+          >
+            取消</button
+          ><button class="primary-button" type="submit">保存名称</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="equipment-dialog" class="small-dialog">
+      <form id="equipment-form">
+        <div class="dialog-top">
+          <h2>选择演示设备</h2>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="equipment-dialog"
+            aria-label="关闭设备窗口"
+          >
+            <span data-icon="x"></span>
+          </button>
+        </div>
+        <p class="dialog-intro">
+          配件将在所选设备范围内查找。更换设备后，需要重新启动检索。
+        </p>
+        <label class="field-label" for="equipment-select">设备编码</label
+        ><select id="equipment-select" required></select>
+        <div class="dialog-actions">
+          <button
+            type="button"
+            class="secondary-button"
+            data-close="equipment-dialog"
+          >
+            取消</button
+          ><button class="primary-button" type="submit">使用此设备</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="history-dialog" class="small-dialog">
+      <div class="dialog-top">
+        <h2>会话历史</h2>
+        <button
+          class="icon-button"
+          data-close="history-dialog"
+          aria-label="关闭会话历史"
+        >
+          <span data-icon="x"></span>
+        </button>
+      </div>
+      <div id="mobile-history-list"></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

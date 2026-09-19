@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成紧固连接件示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m59 34 26-9 24 15-2 28-26 10-24-16zM69 76l45 80 23-13-42-73"/><path d="m82 92 26-14m-18 28 25-14m-17 29 24-14m-16 28 23-14m-15 27 22-13"/><path d="m68 45 14-5 13 8-1 14-14 5-13-8z"/></g>
+</svg>

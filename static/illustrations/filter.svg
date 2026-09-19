@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成滤芯示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="96" cy="45" rx="39" ry="14"/><path d="M57 45v90c0 19 78 19 78 0V45M68 53v82m14-79v84m14-82v85m14-87v84m14-87v79"/><ellipse cx="96" cy="45" rx="15" ry="5"/></g>
+</svg>

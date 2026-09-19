@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成阀示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="47" y="82" width="99" height="50" rx="8"/><path d="M71 82V44h43v38M65 132v21h22v-21m30 0v21h22v-21M35 99h12m99 0h14"/><rect x="78" y="29" width="29" height="15" rx="3"/><path d="m65 107 13-10 13 20 13-20 13 20 13-10"/></g>
+</svg>

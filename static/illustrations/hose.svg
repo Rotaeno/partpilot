@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成软管示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M55 135c-43-104 94-109 83-39-6 39-59 6-40 49" stroke-width="18"/><path d="M55 135c-43-104 94-109 83-39-6 39-59 6-40 49" stroke="#CBD5E1" stroke-width="10"/><path d="m38 134 27-10 10 25-27 10zm44 10 26-8 8 21-26 8z" fill="#E2E8F0"/></g>
+</svg>

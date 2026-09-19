@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成电机示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="43" y="58" width="91" height="76" rx="20"/><path d="M134 82h27v26h-27M58 134l-8 17h66l-8-17M65 58V42h28v16M60 69v51m15-51v51m15-51v51m15-51v51"/><path d="M35 79h8m-8 33h8"/></g>
+</svg>

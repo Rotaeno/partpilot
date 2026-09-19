@@ -1,0 +1,17 @@
+{
+  "description": "在开发回归完成后冻结的12个离线流程保留案例。答案仅评测器读取，应用不加载此文件。非真实模型效果评测。",
+  "cases": [
+    {"id":"H01","turns":["请帮我找液压回油滤芯，DEMO-EX-001","材质是不锈钢"],"search":true,"status":"results","must_include":"PP-1002","must_exclude":"PP-1001"},
+    {"id":"H02","turns":["设备编码 DEMO-EX-003"],"search":true,"status":"results","min_total":24},
+    {"id":"H03","turns":["DEMO-EX-001，配件编码 PP-1003"],"search":true,"status":"results","must_include":"PP-1003","total":1},
+    {"id":"H04","turns":["帮忙找液压回油滤芯"],"search":false,"status":"collecting","no_query":true},
+    {"id":"H05","turns":["设备 DEMO-EX-888，找滤芯"],"search":true,"status":"collecting","no_query":true},
+    {"id":"H06","turns":["DEMO-EX-001，液压回油滤芯","重量低于0.5公斤"],"search":true,"status":"no_results","diagnostic":true},
+    {"id":"H07","turns":["设备 DEMO-EX-001，找液压滤清器总成","不是总成，要液压回油滤芯"],"search":true,"status":"results","must_include":"PP-1001","must_exclude":"PP-1003"},
+    {"id":"H08","turns":["DEMO-EX-001，液压回油滤芯","至少2400g"],"search":true,"status":"results","must_include":"PP-1002","must_exclude":"PP-1001"},
+    {"id":"H09","turns":["DEMO-EX-001，找液压回油滤芯","至少3公斤，小于2公斤"],"search":true,"status":"conflict","no_query":true},
+    {"id":"H10","turns":["DEMO-EX-001，找液压回油滤芯","重量可能不超过1公斤"],"search":true,"status":"results","must_include":"PP-1002"},
+    {"id":"H11","turns":["DEMO-EX-001，找液压回油滤芯","DEMO-EX-002 或 DEMO-EX-003","材质不锈钢"],"search":true,"status":"conflict","no_query":true},
+    {"id":"H12","turns":["DEMO-EX-001，找完全不存在的齿形弹簧"],"search":true,"status":"no_results","diagnostic":true}
+  ]
+}

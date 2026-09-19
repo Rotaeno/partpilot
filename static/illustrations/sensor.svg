@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
+  <title id="title">合成传感器示意，非产品照片</title>
+  <desc id="desc">PartPilot 通用机械图标，不表达真实配件几何或兼容性。</desc>
+  <rect width="192" height="192" rx="24" fill="#F1F5F9"/>
+  <circle cx="96" cy="96" r="74" fill="#E8EEF5"/>
+  <g fill="none" stroke="#334155" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M84 54V27h25v27M63 54h66v46H63zM76 100h40v46H76zM81 146h30v16H81z"/><path d="m76 110 40-8m-40 18 40-8m-40 18 40-8m-40 18 40-8M71 62v23m11-23v23m12-23v23m12-23v23m12-23v23"/></g>
+</svg>
