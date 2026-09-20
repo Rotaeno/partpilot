@@ -1,2 +1,3 @@
 * text=auto eol=lf
+*.cmd text eol=crlf
 data/public_sources/raw/** -text -whitespace

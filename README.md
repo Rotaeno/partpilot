@@ -11,7 +11,9 @@
 
 ## 安装和启动
 
-本次已安装依赖，服务在 **http://127.0.0.1:8765**。端口已有本项目服务时直接打开页面。
+本次已安装依赖。**双击项目根目录的 `Start-PartPilot.cmd`** 启动真实 Qwen 模式，然后在浏览器打开 **http://127.0.0.1:8765/**。使用期间保持启动窗口打开；关机或服务退出后需要重新启动。重复启动会检测正在运行的 PartPilot，不会再占用同一端口。
+
+如果页面提示“未能加载”或无法连接，先重新启动上述文件，再刷新页面（已打开的工作区也可点击“重新同步”）。不要直接双击 `static/research.html`；网页需要本地服务提供接口。历史记录和费用账本仍保存在 `runtime/partpilot.db`，重启不会清空。
 
 以后在 Windows PowerShell 启动真实 Qwen 模式：
 
@@ -98,6 +100,8 @@ v0.1 的填槽/过滤是固定流程；v0.2 模型根据观察选择下一工具
 npm.cmd ci --ignore-scripts --cache .cache/npm --no-audit --no-fund
 # 保持应用运行，旧界面离线检查
 node scripts/test_ui.cjs
+# 断网提示与重新连接（JSDOM + 真实本地API，不调用模型）
+node scripts/test_research_connection.cjs
 # 以下会调用真实Qwen，计入授权账本
 node scripts/test_research_ui.cjs --live
 .venv/Scripts/python scripts/evaluate_research.py --live --output artifacts/new-agent-eval.json

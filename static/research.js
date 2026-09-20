@@ -204,6 +204,10 @@
         throw new Error(
           "请求等待超时。服务可能仍在执行，请重新同步当前查证，避免重复提交。",
         );
+      if (error instanceof TypeError)
+        throw new Error(
+          "无法连接本地服务。请在项目文件夹双击 Start-PartPilot.cmd，保持启动窗口打开，然后点击“重新同步”。",
+        );
       throw error;
     } finally {
       clearTimeout(timer);
