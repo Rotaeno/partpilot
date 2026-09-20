@@ -1,5 +1,9 @@
 # 恢复状态
 
+## GitHub公开交付（2026-09-20）
+用户明确要求推送GitHub，并选择公开仓库Rotaeno/partpilot。已通过现有Git凭据创建 https://github.com/Rotaeno/partpilot ，确认private=false，正常推送main并建立origin/main跟踪；首批远程SHA与本地af50f8d一致，无强推或其他仓库修改。README补充公开仓库克隆、首次安装及默认离线启动步骤。
+发布前验证：75个跟踪文件、126个Git对象（96个blob）的历史扫描未发现凭据匹配，运行库/日志/缓存/依赖/真实.env均未跟踪（artifacts/github-preflight.json）。第三方公开BOM保留源版本、署名和GPL许可证，企业原始PRD及业务数据未进入仓库。61项Python测试通过（5.64秒，1个上游弃用警告），artifacts/tests-github-preflight.log/xml；8源文件/48条目/28章节离线完整性验证通过，artifacts/data-github-preflight.log。本次发布无模型调用。后续使用普通git push同步，不清空费用账本；GitHub公开代码仓库并非在线部署的应用。
+
 ## 加载故障修复（2026-09-20）
 用户反馈“未能加载”。实查8765无监听，原父进程40656和服务进程59884均已退出，原日志仅有启动记录，无法据此确定退出原因。已恢复Qwen服务，首页/静态资源/配置/历史/健康接口均HTTP 200；账本仍100次、约0.31625元，未新增模型调用。
 新增根目录Start-PartPilot.cmd，调用现有PowerShell前台启动脚本；保持窗口打开，重复启动检测现有模式/预算，不重启或清空数据库。脚本补缺失依赖/密钥提示；研究界面网络错误明确提示本地启动及重新同步。README不再假定交付时的后台进程始终存在。最新运行日志artifacts/server-recovery-stdout.log和server-recovery-stderr.log。

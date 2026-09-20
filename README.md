@@ -11,17 +11,25 @@
 
 ## 安装和启动
 
-本次已安装依赖。**双击项目根目录的 `Start-PartPilot.cmd`** 启动真实 Qwen 模式，然后在浏览器打开 **http://127.0.0.1:8765/**。使用期间保持启动窗口打开；关机或服务退出后需要重新启动。重复启动会检测正在运行的 PartPilot，不会再占用同一端口。
+首次下载后先按下方命令安装依赖。安装完成并配置密钥后，**双击项目根目录的 `Start-PartPilot.cmd`** 启动真实 Qwen 模式，然后在浏览器打开 **http://127.0.0.1:8765/**。使用期间保持启动窗口打开；关机或服务退出后需要重新启动。重复启动会检测正在运行的 PartPilot，不会再占用同一端口。
 
 如果页面提示“未能加载”或无法连接，先重新启动上述文件，再刷新页面（已打开的工作区也可点击“重新同步”）。不要直接双击 `static/research.html`；网页需要本地服务提供接口。历史记录和费用账本仍保存在 `runtime/partpilot.db`，重启不会清空。
 
-以后在 Windows PowerShell 启动真实 Qwen 模式：
+在 Windows PowerShell 下载并启动（需要 Python 3.12 和 Git）：
 
 ```powershell
-cd 'D:\文档\三一文档\partpilot'
-# 首次安装时执行；本次已安装
+git clone https://github.com/Rotaeno/partpilot.git
+cd partpilot
+# 首次安装时执行
 .\scripts\setup.ps1
-# 使用环境中的 DASHSCOPE_API_KEY；用户已授权50元项目总预算
+# 默认离线启动，不需要密钥，不产生模型费用
+.\scripts\start.ps1
+```
+
+真实模型模式需要自行在环境中配置 `DASHSCOPE_API_KEY`，再停止离线服务并执行：
+
+```powershell
+# 50元为此工作库的累计应用预算；启动本身不调用模型
 .\scripts\start.ps1 -Online -BudgetCny 50
 ```
 
